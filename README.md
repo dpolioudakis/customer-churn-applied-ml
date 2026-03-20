@@ -1,4 +1,8 @@
-# Customer Churn Prediction
+# Applied ML Playbook: Customer Churn Prediction
+
+This project works through a churn prediction problem for a telecom dataset, structured as a repeatable playbook for applied tabular ML. It covers the full workflow from EDA through business impact quantification, and the approach generalizes to any cost-sensitive binary classification problem.
+
+---
 
 ## Executive Summary
 
@@ -37,7 +41,7 @@ Success is defined as increasing expected net retention value under a fixed outr
 
 ## Data Overview
 
-- Dataset: Telco Customer Churn
+- Dataset: [Telco Customer Churn](https://www.kaggle.com/datasets/blastchar/telco-customer-churn) (IBM sample dataset via Kaggle)
 - Observations: ~7,000 customers
 - Target: `Churn` (Yes/No)
 
@@ -119,9 +123,9 @@ SHAP analysis confirmed intuitive drivers and revealed modest nonlinear effects 
 
 ## Files
 
-- `telco_customer_churn_analysis.ipynb` — full modeling workflow  
-- `README.md` — project overview  
-- `telco.csv` — dataset  
+- `telco_customer_churn_analysis.ipynb` — full modeling workflow
+- `PLAYBOOK.md` — reusable workflow checklist and EDA reference
+- `WA_Fn-UseC_-Telco-Customer-Churn.csv` — dataset
 
 ---
 
@@ -136,3 +140,37 @@ This project demonstrates a repeatable tabular machine learning framework for bu
 - Model interpretability via SHAP
 
 The approach generalizes beyond churn prediction to other tabular classification problems with cost-sensitive decision policies.
+
+---
+
+## Using This as a Template
+
+The notebook is structured as a reusable framework for tabular binary classification. To adapt it to a new problem:
+
+### 1. Swap in your dataset
+- Replace the CSV and update the feature lists in the **Preprocessing** section
+- Identify your numeric and categorical columns, the `ColumnTransformer` pipeline handles both automatically
+- Check for class imbalance early; it determines which metrics to prioritize
+
+### 2. Define your cost model
+The **Business Simulation** section parameterizes three values:
+- `contact_cost` — cost of one outreach attempt
+- `retention_value` — revenue saved per retained customer
+- `retention_rate` — realistic acceptance/conversion rate
+
+Replace these with estimates from your domain to get a problem-specific ROI calculation.
+
+### 3. Set your operating point
+The **Threshold Analysis** section evaluates precision/recall tradeoffs across probability cutoffs. If you have a fixed budget (e.g., can only contact N% of customers), use the fixed-budget block to find the optimal threshold.
+
+### 4. Reusable components
+| Component | Where in notebook | What to change |
+|---|---|---|
+| Preprocessing pipeline | Preprocessing section | Column names, imputation strategy |
+| Baseline comparison | Logistic Regression section | Swap in domain-relevant heuristic |
+| Hyperparameter search | XGBoost Tuning section | Adjust search space for your model |
+| SHAP interpretation | SHAP Analysis section | Works as-is for any tree model |
+| Cost simulation | Business Simulation section | Replace cost/value assumptions |
+
+### 5. Evaluation choices
+This project uses **Average Precision** as the primary metric (not accuracy or ROC-AUC alone) because the target class is imbalanced. If your problem has a different class distribution or decision context, revisit metric selection before tuning.
